@@ -26,13 +26,7 @@ void process_packet(const unsigned char *packet, int packet_length)
 
     printf("Telnet Command: ");
     for (int i = 0; i < payload_length; i++) {
-        // Check for Telnet commands and responses
-        if (payload[i] == 0xff && i + 2 < payload_length && payload[i + 2] == 0x03) {
-            // Telnet command detected, skip to the command part
-            i += 2;
-        } else {
-            printf("%c", payload[i]);
-        }
+        printf("%c", payload[i]);
     }
 
     printf("\n\n");
