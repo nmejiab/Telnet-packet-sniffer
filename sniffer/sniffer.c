@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     // Printing the body of the packets
     int packet_count = 0;
     while (1) {
-        int result = pcap_next_ex(handle, &header, &packet);
+        int result = pcap_next_ex(handle, &header, (const unsigned char **)&packet);
         if (result == 1) {
             printf("Packet captured #%d\n", ++packet_count);
             process_packet(packet, header.caplen);
