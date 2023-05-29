@@ -20,11 +20,13 @@ void process_packet(const unsigned char *packet, int packet_length)
     printf("Source IP: %s\n", src_ip);
     printf("Destination IP: %s\n", dst_ip);
 
-    // Rest of your code to print packet payload
-    for (int i = 0; i < packet_length; i++) {
-        printf("%02X ", packet[i]);
-        if ((i + 1) % 16 == 0)
-            printf("\n");
+    // Print packet payload (Telnet command)
+    const unsigned char *payload = packet + 14 + (ip_header->ip_hl * 4) + sizeof(struct icmphdr);
+    int payload_length = packet_length - (14 + (ip_header->ip_hl * 4) + sizeof(struct icmphdr));
+
+    printf("Telnet Command: ");
+    for (int i = 0; i < payload_length; i++) {
+        printf("%c", payload[i]);
     }
 
     printf("\n\n");
