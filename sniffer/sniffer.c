@@ -41,6 +41,22 @@ int main(int argc, char *argv[])
         return 2;
     }
 
+    // Printing the body of the packets
+    int packet_count = 0;
+    while (1) {
+        int result = pcap_next_ex(handle, &header, &packet);
+        if (result == 1) {
+            printf("Packet captured #%d\n", ++packet_count);
+            process_packet(packet, header.caplen);
+        } else if (result == -1) {
+            fprintf(stderr, "Error reading packet: %s\n", pcap_geterr(handle));
+            break;
+        } else if (result == 0) {
+            // No more packets to capture in this iteration
+            continue;
+        }
+    }
+
     // Closing all
     pcap_close(handle);
     pcap_freealldevs(alldevs);
