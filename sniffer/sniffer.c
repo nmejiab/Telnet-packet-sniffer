@@ -1,8 +1,26 @@
 #include <stdio.h>
 #include <pcap.h>
+#include <netinet/ip.h>
+#include <netinet/ip_icmp.h>
+#include <arpa/inet.h>
 
 void process_packet(const unsigned char *packet, int packet_length)
 {
+    struct ip *ip_header;
+    struct icmphdr *icmp_header;
+
+    ip_header = (struct ip *)(packet + 14); // Offset of 14 for Ethernet header
+    icmp_header = (struct icmphdr *)(packet + 14 + (ip_header->ip_hl * 4)); // Offset of 14 + size of IP header
+
+    char src_ip[INET_ADDRSTRLEN];
+    char dst_ip[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(ip_header->ip_src), src_ip, INET_ADDRSTRLEN);
+    inet_ntop(AF_INET, &(ip_header->ip_dst), dst_ip, INET_ADDRSTRLEN);
+
+    printf("Source IP: %s\n", src_ip);
+    printf("Destination IP: %s\n", dst_ip);
+
+    // Rest of your code to print packet payload
     for (int i = 0; i < packet_length; i++) {
         printf("%02X ", packet[i]);
         if ((i + 1) % 16 == 0)
