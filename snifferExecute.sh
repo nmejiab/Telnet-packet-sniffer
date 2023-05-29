@@ -1,3 +1,3 @@
 cd sniffer
-gcc sniffer.c -o sniffer
-./sniffer
+gcc sniffer.c -o Run-sniffer
+./Run-sniffer
