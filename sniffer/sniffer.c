@@ -8,7 +8,6 @@ int main(int argc, char *argv[])
     char *dev;
     char errbuf[PCAP_ERRBUF_SIZE];
     pcap_if_t *alldevs;
-    pcap_if_t *d;
 
     if (pcap_findalldevs(&alldevs, errbuf) == -1) {
         fprintf(stderr, "Error finding devices: %s\n", errbuf);
@@ -25,9 +24,25 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
         return 2;
     }
+    // Compile the ICMP filter
+    struct pcap_pkthdr header;
+    const unsigned char *packet;
+    char filter_exp[] = "icmp";
+    struct bpf_program fp;
+
+    if (pcap_compile(handle, &fp, filter_exp, 0, PCAP_NETMASK_UNKNOWN) == -1) {
+        fprintf(stderr, "Couldn't parse filter %s: %s\n", filter_exp, pcap_geterr(handle));
+        return 2;
+    }
+
+    // Install the ICMP filter
+    if (pcap_setfilter(handle, &fp) == -1) {
+        fprintf(stderr, "Couldn't install filter %s: %s\n", filter_exp, pcap_geterr(handle));
+        return 2;
+    }
 
     // Closing all
-    pcap_freealldevs(alldevs);
     pcap_close(handle);
+    pcap_freealldevs(alldevs);
     return 0;
 }
