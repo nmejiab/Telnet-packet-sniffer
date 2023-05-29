@@ -53,10 +53,10 @@ int main(int argc, char *argv[])
         fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
         return 2;
     }
-    // Compile the ICMP filter
+    // Compile the telnet filter
     struct pcap_pkthdr header;
     const unsigned char *packet;
-    char filter_exp[] = "icmp";
+    char filter_exp[] = "tcp port 23";
     struct bpf_program fp;
 
     if (pcap_compile(handle, &fp, filter_exp, 0, PCAP_NETMASK_UNKNOWN) == -1) {
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
         return 2;
     }
 
-    // Install the ICMP filter
+    // Install the telnet filter
     if (pcap_setfilter(handle, &fp) == -1) {
         fprintf(stderr, "Couldn't install filter %s: %s\n", filter_exp, pcap_geterr(handle));
         return 2;
