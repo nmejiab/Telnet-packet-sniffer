@@ -1,6 +1,17 @@
 #include <stdio.h>
 #include <pcap.h>
 
+void process_packet(const unsigned char *packet, int packet_length)
+{
+    for (int i = 0; i < packet_length; i++) {
+        printf("%02X ", packet[i]);
+        if ((i + 1) % 16 == 0)
+            printf("\n");
+    }
+
+    printf("\n\n");
+}
+
 int main(int argc, char *argv[])
 {
 
